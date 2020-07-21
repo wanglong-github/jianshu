@@ -39,7 +39,10 @@ class JianshuSpider(scrapy.Spider):
             #压入解析作者首页信息请求对象
             yield Request(url=au_url,callback=self.parse_auth,
                           headers=self.ajax_headers,meta={'slug':slug_id})
-
+            # 通过作者标识，得到对应粉丝页面
+            fan_url = f'https://www.jianshu.com/users/{slug_id}/followers'
+            yield Request(url=fan_url, callback=self.parse_fans,
+                          headers=self.ajax_headers, meta={'slug': slug_id})
 
 
         #生成新网址
@@ -54,3 +57,8 @@ class JianshuSpider(scrapy.Spider):
         #获取Request.meta.slug
         slug=response.meta['slug']
         print(f'作者标识:{slug}')
+
+    def parse_fans(self,response):
+        # 解析作者对应粉丝信息
+        slug = response.meta['slug']
+        print(f'解析作者对应粉丝信息，作者标识:{slug}')
