@@ -1,5 +1,5 @@
 import scrapy
-from requests import Request
+from scrapy import Request
 from fake_useragent import UserAgent
 
 class JianshuSpider(scrapy.Spider):
@@ -18,13 +18,23 @@ class JianshuSpider(scrapy.Spider):
                     'Referer': 'http://www.jianshu.com'}
     # 只加载列表模块
     ajax_headers = dict(base_headers, **{"X-PJAX": "true", 'User-Agent': UserAgent().random})
+    start_page=2
 
     #start_requests方法是spider爬虫的启动方法，作用读取start_urls起始网址列表
     #向爬虫引擎发送Request对象，让引擎回调parse方法
     def start_requests(self):
         print('执行start_requests...')
-        yield Request(url='jianshu.com/recommendations/users?page=1',
+        yield Request(url='https://www.jianshu.com/recommendations/users?page=1',
                       headers=self.ajax_headers)
 
     def parse(self, response):
-        print('执行parse...')
+        #解析当前作者个人页面url
+        auth_list=response.xpath('//div[@class="wrap"]/a/@href').extract()
+        print(f'作者地址：{auth_list}')
+        #生成新网址
+        nurl=f'https://www.jianshu.com/recommendations/users?page={self.start_page}'
+        self.start_page+=1
+        if self.start_page<101:
+            yield Request(url=nurl,callback=self.parse,
+                          headers=self.ajax_headers)
+
