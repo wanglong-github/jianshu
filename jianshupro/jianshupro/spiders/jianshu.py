@@ -30,7 +30,18 @@ class JianshuSpider(scrapy.Spider):
     def parse(self, response):
         #解析当前作者个人页面url
         auth_list=response.xpath('//div[@class="wrap"]/a/@href').extract()
-        print(f'作者地址：{auth_list}')
+        # print(f'作者地址：{auth_list}')
+        for au in auth_list:
+            #获取作者id
+            slug_id=au.split('/')[-1]
+            #按照作者slug_id获取对应请求作者首页的地址
+            au_url=f'https://www.jianshu.com/u/{slug_id}'
+            #压入解析作者首页信息请求对象
+            yield Request(url=au_url,callback=self.parse_auth,
+                          headers=self.ajax_headers,meta={'slug':slug_id})
+
+
+
         #生成新网址
         nurl=f'https://www.jianshu.com/recommendations/users?page={self.start_page}'
         self.start_page+=1
@@ -38,3 +49,8 @@ class JianshuSpider(scrapy.Spider):
             yield Request(url=nurl,callback=self.parse,
                           headers=self.ajax_headers)
 
+    def parse_auth(self,response):
+        #解析作者首页信息
+        #获取Request.meta.slug
+        slug=response.meta['slug']
+        print(f'作者标识:{slug}')
