@@ -22,11 +22,17 @@ class JianshuSpider(scrapy.Spider):
     # 只加载列表模块
     ajax_headers = dict(base_headers, **{"X-PJAX": "true", 'User-Agent': UserAgent().random})
     start_page=2
+    #当前作者的粉丝数量
+    follow_num={}
 
     #start_requests方法是spider爬虫的启动方法，作用读取start_urls起始网址列表
     #向爬虫引擎发送Request对象，让引擎回调parse方法
     def start_requests(self):
         # print('执行start_requests...')
+        # #设置起始页码
+        self.fans_start_page=2
+        # #设置粉丝数量
+        self.fans_num=0
         yield Request(url='https://www.jianshu.com/recommendations/users?page=1',
                       headers=self.base_headers)
 
@@ -37,6 +43,9 @@ class JianshuSpider(scrapy.Spider):
         for au in auth_list:
             #获取作者id
             slug_id=au.split('/')[-1]
+            #当前作者粉丝数量
+            self.follow_num[slug_id]=0
+
             #按照作者slug_id获取对应请求作者首页的地址
             au_url=f'https://www.jianshu.com/u/{slug_id}'
             #压入解析作者首页信息请求对象
@@ -103,6 +112,10 @@ class JianshuSpider(scrapy.Spider):
         item['gender'] = gender
         item['following_num'] = int(following_num)
         item['followers_num'] = int(followers_num)
+        #得到粉丝的状态
+
+        self.follow_num[slug]=int(followers_num)
+
         item['articles_num'] = int(articles_num)
         item['words_num'] = int(words_num)
         item['be_liked_num'] = int(be_liked_num)
@@ -111,7 +124,46 @@ class JianshuSpider(scrapy.Spider):
     def parse_fans(self,response):
         # 解析作者对应粉丝信息
         slug = response.meta['slug']
-        print(f'解析作者对应粉丝信息，作者标识:{slug}')
+        # print(f'解析作者对应粉丝信息，作者标识:{slug}')
+        # #设置起始页码
+        # self.fans_start_page=2
+        # #设置粉丝数量
+        # self.fans_num=0
+        ulist=response.xpath('//div[@id="list-container"]/ul[@class="user-list"]/li')
+        for u in ulist:
+            #解析每一个粉丝对象，发送到管道中
+            item=JianshuproItem()
+            #昵称
+            nick=u.xpath('./div[@class="info"][1]/a/text()').extract_first()
+
+            #获取关注、粉丝数、文章数
+            temp=u.xpath('./div[@class="info"][1]/div[@class="meta"][1]/span/text()').extract()
+            arr_temp=[]
+            for t in temp:
+                arr=t.split(" ")[-1]
+                arr_temp.append(arr)
+            print(f'粉丝昵称：{nick}')
+            following_num=int(arr_temp[0])
+            followers_num=int(arr_temp[1])
+            articles_num=int(arr_temp[2])
+            item['nickname']=nick
+            item['following_num']=following_num
+            item['followers_num']=followers_num
+            item['articles_num']=articles_num
+
+            yield item
+            #对粉丝进行计数
+            self.fans_num+=1
+            #判断粉丝获取是否结束
+            if self.fans_num > self.follow_num[slug]:
+                break
+        #获取粉丝分页url
+        xurl=f'https://www.jianshu.com/users/51b4ef597b53/followers?page={self.fans_start_page}'
+        self.fans_start_page+=1
+        if self.fans_num < self.follow_num[slug]:
+            yield Request(url=xurl, callback=self.parse_fans,
+                          headers=self.base_headers,meta={'slug':slug})
+
 
     def parse_schedule(self,response):
         # 解析当前作者动态信息
