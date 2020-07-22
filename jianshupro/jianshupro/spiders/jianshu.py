@@ -2,6 +2,9 @@ import scrapy
 from scrapy import Request
 from fake_useragent import UserAgent
 
+from jianshupro.items import JianshuproItem
+
+
 class JianshuSpider(scrapy.Spider):
     name = 'jianshu'
     # allowed_domains = ['www.jianshu.com']
@@ -23,9 +26,9 @@ class JianshuSpider(scrapy.Spider):
     #start_requests方法是spider爬虫的启动方法，作用读取start_urls起始网址列表
     #向爬虫引擎发送Request对象，让引擎回调parse方法
     def start_requests(self):
-        print('执行start_requests...')
+        # print('执行start_requests...')
         yield Request(url='https://www.jianshu.com/recommendations/users?page=1',
-                      headers=self.ajax_headers)
+                      headers=self.base_headers)
 
     def parse(self, response):
         #解析当前作者个人页面url
@@ -38,28 +41,72 @@ class JianshuSpider(scrapy.Spider):
             au_url=f'https://www.jianshu.com/u/{slug_id}'
             #压入解析作者首页信息请求对象
             yield Request(url=au_url,callback=self.parse_auth,
-                          headers=self.ajax_headers,meta={'slug':slug_id})
+                          headers=self.base_headers,meta={'slug':slug_id})
             # 通过作者标识，得到对应粉丝页面
             fan_url = f'https://www.jianshu.com/users/{slug_id}/followers'
             yield Request(url=fan_url, callback=self.parse_fans,
-                          headers=self.ajax_headers, meta={'slug': slug_id})
+                          headers=self.base_headers, meta={'slug': slug_id})
             #解析用户的操作动态信息
             schedule_url=f'https://www.jianshu.com/users/{slug_id}/timeline'
             yield Request(url=schedule_url, callback=self.parse_schedule,
-                          headers=self.ajax_headers, meta={'slug': slug_id})
+                          headers=self.base_headers, meta={'slug': slug_id})
 
         #生成新网址
         nurl=f'https://www.jianshu.com/recommendations/users?page={self.start_page}'
         self.start_page+=1
         if self.start_page<101:
             yield Request(url=nurl,callback=self.parse,
-                          headers=self.ajax_headers)
+                          headers=self.base_headers)
 
     def parse_auth(self,response):
         #解析作者首页信息
         #获取Request.meta.slug
         slug=response.meta['slug']
-        print(f'作者标识:{slug}')
+        # print(f'作者标识:{slug}')
+        item = JianshuproItem()
+        #封装解析用户信息
+        # 得到个人个人详情界面的主要详情头
+        div_main_top = response.xpath('//div[@class="main-top"]')
+        #作者标识
+        # 昵称
+        nickname = div_main_top.xpath('.//div[@class="title"]/a/text()').extract_first()
+        # 头像
+        head_pic = div_main_top.xpath('.//a[@class="avatar"]/img/@src').extract_first()
+        # 是否认证性别
+        gender_tmp = div_main_top.xpath('.//div[@class="title"]/i/@class').extract_first()
+        # 判断是否认证男女未认证则为No
+        if gender_tmp:
+            gender = gender_tmp.split('-')[-1]
+        else:
+            gender = 'No'
+        # 得到关注粉丝文章数
+        all_nums_first = div_main_top.xpath(
+            './/div[@class="info"]/ul/li/div[@class="meta-block"]/a/p/text()').extract()
+        # 关注
+        following_num = all_nums_first[0]
+        # 粉丝
+        followers_num = all_nums_first[1]
+        # 文章
+        articles_num = all_nums_first[2]
+        # 得到字数收获喜欢总资产数
+        all_nums_second = div_main_top.xpath(
+            './/div[@class="info"]/ul/li/div[@class="meta-block"]/p/text()').extract()
+        # 字数
+        words_num = all_nums_second[0]
+        # 收获喜欢
+        be_liked_num = all_nums_second[1]
+
+
+        item['nickname'] = nickname
+        item['slug'] = slug
+        item['head_pic'] = head_pic
+        item['gender'] = gender
+        item['following_num'] = int(following_num)
+        item['followers_num'] = int(followers_num)
+        item['articles_num'] = int(articles_num)
+        item['words_num'] = int(words_num)
+        item['be_liked_num'] = int(be_liked_num)
+        yield item
 
     def parse_fans(self,response):
         # 解析作者对应粉丝信息

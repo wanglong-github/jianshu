@@ -7,7 +7,11 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 
+from jianshupro.items import JianshuproItem
+
 
 class JianshuproPipeline:
     def process_item(self, item, spider):
+        if isinstance(item,JianshuproItem):
+            print(f'获取用户信息：{item}')
         return item
