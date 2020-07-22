@@ -43,7 +43,10 @@ class JianshuSpider(scrapy.Spider):
             fan_url = f'https://www.jianshu.com/users/{slug_id}/followers'
             yield Request(url=fan_url, callback=self.parse_fans,
                           headers=self.ajax_headers, meta={'slug': slug_id})
-
+            #解析用户的操作动态信息
+            schedule_url=f'https://www.jianshu.com/users/{slug_id}/timeline'
+            yield Request(url=schedule_url, callback=self.parse_schedule,
+                          headers=self.ajax_headers, meta={'slug': slug_id})
 
         #生成新网址
         nurl=f'https://www.jianshu.com/recommendations/users?page={self.start_page}'
@@ -62,3 +65,8 @@ class JianshuSpider(scrapy.Spider):
         # 解析作者对应粉丝信息
         slug = response.meta['slug']
         print(f'解析作者对应粉丝信息，作者标识:{slug}')
+
+    def parse_schedule(self,response):
+        # 解析当前作者动态信息
+        slug = response.meta['slug']
+        print(f'解析当前作者动态信息，作者标识:{slug}')
