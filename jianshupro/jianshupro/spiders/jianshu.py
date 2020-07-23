@@ -33,6 +33,8 @@ class JianshuSpider(scrapy.Spider):
         self.fans_start_page=2
         # #设置粉丝数量
         self.fans_num=0
+        #起始动态页码
+        self.timeline_startpage=2
         yield Request(url='https://www.jianshu.com/recommendations/users?page=1',
                       headers=self.base_headers)
 
@@ -166,6 +168,28 @@ class JianshuSpider(scrapy.Spider):
 
 
     def parse_schedule(self,response):
+        #处理用户动态
+
+        # https: // www.jianshu.com / users / 51b4ef597b53 / timeline
+        # https: // www.jianshu.com / users / 51b4ef597b53 / timeline?max_id = 660638908 & page = 2
         # 解析当前作者动态信息
         slug = response.meta['slug']
         print(f'解析当前作者动态信息，作者标识:{slug}')
+        #获取所有的文章项目
+        li=response.xpath('//ul[@class="note-list"]/li')
+        if not li:
+            return
+        #遍历所有文章区域
+        for it in li:
+            #获取该元素id属性
+            xid=it.xpath('./@id').extract_first()
+            print(f'动态id：{xid}')
+        #获取下一页max_id取值
+        tid=li[-1].xpath('./@id').extract_first()
+        tid=int(tid.split('-')[-1])
+
+        xurl=f'https://www.jianshu.com/users/{slug}/timeline?max_id ={tid-1}&page={self.timeline_startpage}'
+        self.timeline_startpage+=1
+        #提交下一个分页请求
+        yield Request(url=xurl, callback=self.parse_schedule,
+                          headers=self.base_headers, meta={'slug': slug})

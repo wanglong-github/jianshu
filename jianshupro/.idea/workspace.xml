@@ -9,7 +9,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/jianshupro$main.coverage" NAME="main Coverage Results" MODIFIED="1595388178890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jianshupro" />
+    <SUITE FILE_PATH="coverage/jianshupro$main.coverage" NAME="main Coverage Results" MODIFIED="1595495539554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jianshupro" />
     <SUITE FILE_PATH="coverage/jianshupro$jianshu.coverage" NAME="jianshu Coverage Results" MODIFIED="1595329692896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jianshupro/spiders" />
   </component>
   <component name="FUSProjectUsageTrigger">
@@ -45,30 +45,35 @@
     <session id="-1451187772">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.16" value="1" />
           <entry key="project.open.time.28" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.open.time.30" value="1" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
+          <entry key="html" value="2" />
           <entry key="py" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+          <entry key="HTML" value="2" />
           <entry key="Python" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1103" />
+          <entry key="html" value="176" />
+          <entry key="py" value="2285" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="1103" />
+          <entry key="HTML" value="176" />
+          <entry key="Python" value="2285" />
         </counts>
       </usages-collector>
     </session>
@@ -78,8 +83,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jianshupro/pipelines.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+            <state relative-caret-position="390">
+              <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
               <folding>
                 <element signature="e#238#273#0" expanded="true" />
               </folding>
@@ -87,18 +92,27 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jianshupro/spiders/jianshu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-573">
-              <caret line="58" column="15" selection-start-line="58" selection-start-column="15" selection-end-line="58" selection-end-column="15" />
+            <state relative-caret-position="13">
+              <caret line="188" column="30" lean-forward="true" selection-start-line="188" selection-start-column="30" selection-end-line="188" selection-end-column="30" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
-                <marker date="1595388178828" expanded="true" signature="1087:1263" ph="..." />
-                <marker date="1595388178828" expanded="true" signature="2578:2587" ph="..." />
-                <marker date="1595388178828" expanded="true" signature="4450:4455" ph="..." />
-                <marker date="1595388178828" expanded="true" signature="4450:4459" ph="..." />
+                <marker date="1595491744920" expanded="true" signature="1120:1437" ph="..." />
+                <marker date="1595491744920" expanded="true" signature="2814:2823" ph="..." />
+                <marker date="1595491744920" expanded="true" signature="6398:6403" ph="..." />
+                <marker date="1595491744920" expanded="true" signature="6398:6407" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/00.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="33" column="7" lean-forward="true" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -106,8 +120,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jianshupro/items.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="707">
-              <caret line="27" column="8" lean-forward="true" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="8" />
+            <state relative-caret-position="780">
+              <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -124,7 +138,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/jianshupro/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="467">
+            <state relative-caret-position="1920">
               <caret line="64" selection-start-line="64" selection-end-line="66" selection-end-column="1" />
             </state>
           </provider>
@@ -136,6 +150,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -148,8 +163,9 @@
         <option value="$PROJECT_DIR$/jianshupro/main.py" />
         <option value="$PROJECT_DIR$/jianshupro/settings.py" />
         <option value="$PROJECT_DIR$/jianshupro/pipelines.py" />
-        <option value="$PROJECT_DIR$/jianshupro/spiders/jianshu.py" />
         <option value="$PROJECT_DIR$/jianshupro/items.py" />
+        <option value="$PROJECT_DIR$/00.html" />
+        <option value="$PROJECT_DIR$/jianshupro/spiders/jianshu.py" />
       </list>
     </option>
   </component>
@@ -183,12 +199,6 @@
               <item name="jianshupro" type="462c0819:PsiDirectoryNode" />
               <item name="jianshupro" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="jianshupro" type="b2602c69:ProjectViewProjectNode" />
-              <item name="jianshupro" type="462c0819:PsiDirectoryNode" />
-              <item name="jianshupro" type="462c0819:PsiDirectoryNode" />
-              <item name="spiders" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -196,6 +206,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -285,14 +296,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="762" y="0" width="781" height="830" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.24481328" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24481328" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32998565" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32998565" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -310,12 +320,12 @@
       <window_info anchor="right" id="Database" order="4" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24481328" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24481328" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32998565" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32998565" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -354,6 +364,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/jianshupro/pipelines.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="15" column="35" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+          <folding>
+            <element signature="e#238#273#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/jianshupro/items.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="26" column="4" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/jianshupro/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -363,39 +390,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/jianshupro/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="467">
+        <state relative-caret-position="1920">
           <caret line="64" selection-start-line="64" selection-end-line="66" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/jianshupro/pipelines.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
-          <folding>
-            <element signature="e#238#273#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/jianshupro/items.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="707">
-          <caret line="27" column="8" lean-forward="true" selection-start-line="27" selection-start-column="8" selection-end-line="27" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/jianshupro/spiders/jianshu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-573">
-          <caret line="58" column="15" selection-start-line="58" selection-start-column="15" selection-end-line="58" selection-end-column="15" />
+        <state relative-caret-position="13">
+          <caret line="188" column="30" lean-forward="true" selection-start-line="188" selection-start-column="30" selection-end-line="188" selection-end-column="30" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
-            <marker date="1595388178828" expanded="true" signature="1087:1263" ph="..." />
-            <marker date="1595388178828" expanded="true" signature="2578:2587" ph="..." />
-            <marker date="1595388178828" expanded="true" signature="4450:4455" ph="..." />
-            <marker date="1595388178828" expanded="true" signature="4450:4459" ph="..." />
+            <marker date="1595491744920" expanded="true" signature="1120:1437" ph="..." />
+            <marker date="1595491744920" expanded="true" signature="2814:2823" ph="..." />
+            <marker date="1595491744920" expanded="true" signature="6398:6403" ph="..." />
+            <marker date="1595491744920" expanded="true" signature="6398:6407" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/00.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="33" column="7" lean-forward="true" selection-start-line="33" selection-start-column="7" selection-end-line="33" selection-end-column="7" />
         </state>
       </provider>
     </entry>
