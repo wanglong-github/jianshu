@@ -1,3 +1,5 @@
+import datetime
+
 import scrapy
 from scrapy import Request
 from fake_useragent import UserAgent
@@ -24,6 +26,21 @@ class JianshuSpider(scrapy.Spider):
     start_page=2
     #当前作者的粉丝数量
     follow_num={}
+    timeline_data={}
+    # 获取用户动态信息：
+    # [{用户id:
+    # {'发表评论':[{时间:{其他用户id:评论文字,对应自己文章:文章id}},...]},
+    # {'发表文章':[{发表时间:文章id},...]},
+    # {'喜欢文章':[{时间：{喜欢文章id},...]},
+    # {'赞赏文章':[{时间：{赞赏文章id},...]},
+    # {'关注用户':[{时间：{关注用户id},...]},
+    # {'关注文集':[{时间：{关注文集id},...]},
+    # {'关注专题':[{时间：{关注专题id},...]},
+    # {'点赞评论':[{时间：{点赞评论id},...]},
+    #
+    # },
+
+
 
     #start_requests方法是spider爬虫的启动方法，作用读取start_urls起始网址列表
     #向爬虫引擎发送Request对象，让引擎回调parse方法
@@ -35,6 +52,7 @@ class JianshuSpider(scrapy.Spider):
         self.fans_num=0
         #起始动态页码
         self.timeline_startpage=2
+
         yield Request(url='https://www.jianshu.com/recommendations/users?page=1',
                       headers=self.base_headers)
 
@@ -47,6 +65,19 @@ class JianshuSpider(scrapy.Spider):
             slug_id=au.split('/')[-1]
             #当前作者粉丝数量
             self.follow_num[slug_id]=0
+
+            # 创建当前用户动态信息统计对象
+            if slug_id not in self.timeline_data:
+                self.timeline_data[slug_id] = [
+                    {'comment_note': []},  # 发表评论
+                    {'like_note': []},  # 喜欢文章
+                    {'reward_note': []},  # 赞赏文章
+                    {'share_note': []},  # 发表文章
+                    {'like_user': []},  # 关注用户
+                    {'like_collection': []},  # 关注专题
+                    {'like_comment': []},  # 点赞评论
+                    {'like_notebook': []},  # 关注文案
+                ]
 
             #按照作者slug_id获取对应请求作者首页的地址
             au_url=f'https://www.jianshu.com/u/{slug_id}'
@@ -173,7 +204,20 @@ class JianshuSpider(scrapy.Spider):
         # https: // www.jianshu.com / users / 51b4ef597b53 / timeline
         # https: // www.jianshu.com / users / 51b4ef597b53 / timeline?max_id = 660638908 & page = 2
         # 解析当前作者动态信息
+        # 获取用户动态信息：
+        # [{用户id:
+        # {'发表评论':[{时间:{其他用户id:评论文字,对应自己文章:文章id}},...]},
+        # {'发表文章':[{发表时间:文章id},...]},
+        # {'喜欢文章':[{时间：{喜欢文章id},...]},
+        # {'赞赏文章':[{时间：{赞赏文章id},...]},
+        # {'关注用户':[{时间：{关注用户id},...]},
+        # {'关注文集':[{时间：{关注文集id},...]},
+        # {'关注专题':[{时间：{关注专题id},...]},
+        # {'点赞评论':[{时间：{点赞评论id},...]},
+        #
+        # },
         slug = response.meta['slug']
+
         print(f'解析当前作者动态信息，作者标识:{slug}')
         #获取所有的文章项目
         li=response.xpath('//ul[@class="note-list"]/li')
@@ -181,9 +225,19 @@ class JianshuSpider(scrapy.Spider):
             return
         #遍历所有文章区域
         for it in li:
-            #获取该元素id属性
-            xid=it.xpath('./@id').extract_first()
-            print(f'动态id：{xid}')
+            # #获取该元素id属性
+            # xid=it.xpath('./@id').extract_first()
+            # print(f'动态id：{xid}')
+            if it.xpath('.//span[@data-type="like_note"]'):
+                #获取时间
+                xtime=it.xpath('.//span[@data-type="like_note"]/@data-datetime').extract_first()
+                xtime=xtime.split('+')[0].replace('T',' ')
+                xtime=datetime.datetime.strptime(xtime, "%Y-%m-%d %H:%M:%S")
+                #喜欢文章id
+                xhref=it.xpath('./div[@class="content"]/a[1]/@href').extract_first()
+                self.timeline_data[slug][1]['like_note'].append({xtime:xhref})
+                print(f'喜欢文章url:{xhref},时间:{xtime}')
+
         #获取下一页max_id取值
         tid=li[-1].xpath('./@id').extract_first()
         tid=int(tid.split('-')[-1])
