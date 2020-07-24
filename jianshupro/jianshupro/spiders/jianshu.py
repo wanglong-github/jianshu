@@ -175,7 +175,7 @@ class JianshuSpider(scrapy.Spider):
             for t in temp:
                 arr=t.split(" ")[-1]
                 arr_temp.append(arr)
-            print(f'粉丝昵称：{nick}')
+            # print(f'粉丝昵称：{nick}')
             following_num=int(arr_temp[0])
             followers_num=int(arr_temp[1])
             articles_num=int(arr_temp[2])
@@ -218,11 +218,13 @@ class JianshuSpider(scrapy.Spider):
         # },
         slug = response.meta['slug']
 
-        print(f'解析当前作者动态信息，作者标识:{slug}')
+        # print(f'解析当前作者动态信息，作者标识:{slug}')
         #获取所有的文章项目
         li=response.xpath('//ul[@class="note-list"]/li')
         if not li:
-            
+            #当前用户动态信息爬取结束
+            item={self.timeline_data[slug]}
+            print(f'得到当前用户数据：{item}')
             return
         #遍历所有文章区域
         for it in li:
@@ -237,7 +239,7 @@ class JianshuSpider(scrapy.Spider):
                 comm_txt=it.xpath('.//span[@data-type="comment_note"]/p/text()').extract_first()
                 #对应文章url
                 arti_slug=it.xpath('./div[@class="content"]/blockquote/a/@href').extract_first()
-                self.timeline_data[slug][0]['comment_note'].append({xtime: {arti_slug:comm_txt.strip()}})
+                self.timeline_data[slug][0]['comment_note'].append({xtime: {arti_slug:comm_txt}})
                 # print(f'发表评论，文章url:{arti_slug},comm_txt:{comm_txt.strip()},时间：{xtime}')
 
             elif it.xpath('.//span[@data-type="like_note"]'):
@@ -251,7 +253,7 @@ class JianshuSpider(scrapy.Spider):
             elif it.xpath('.//span[@data-type="reward_note"]'):
                 # 赞赏文章
                 xtime = self.extract_time(it, "reward_note")
-                href_id = it.xpath('.//a[@class="title"]/@href')[0].split('/')[-1]
+                href_id = it.xpath('./div[@class="content"]/a[@class="title"]/@href').extract_first()
                 self.timeline_data[slug][2]['reward_note'].append({xtime: href_id})
 
             elif it.xpath('.//span[@data-type="share_note"]'):
@@ -263,7 +265,7 @@ class JianshuSpider(scrapy.Spider):
             elif it.xpath('.//span[@data-type="like_user"]'):
                 # 关注用户
                 xtime = self.extract_time(it, "like_user")
-                href_id = it.xpath('.//a@[class="title"]/@href')[0].split('/')[-1]
+                href_id = it.xpath('.//div[@class="follow-detail"]/div/a@[class="title"]/@href').extract_first()
                 self.timeline_data[slug][4]['like_user'].append({xtime: href_id})
                 # print(f'关注用户：{xhref},时间：{xtime}')
 
@@ -272,7 +274,7 @@ class JianshuSpider(scrapy.Spider):
                 xtime = self.extract_time(it, "like_collection")
                 href_id = it.xpath('./div[@class="content"]/div[@class="follow-detail"]/div/a[class="title"]/@href').extract_first()
                 self.timeline_data[slug][5]['like_collection'].append({xtime: href_id})
-                print(f'关注专题：{href_id},时间：{xtime}')
+                # print(f'关注专题：{href_id},时间：{xtime}')
 
             elif it.xpath('.//span[@data-type="like_comment"]'):
                 # 点赞评论
@@ -280,7 +282,7 @@ class JianshuSpider(scrapy.Spider):
                 # 评论文字
                 ctext = it.xpath('./div[@class="content"]/p/text()').extract_first()
                 self.timeline_data[slug][6]['like_comment'].append({xtime: ctext.strip()})
-                print(f'关注专题：{href_id},时间：{xtime}')
+                # print(f'关注专题：{href_id},时间：{xtime}')
             elif it.xpath('.//span[@data-type="like_notebook"]'):
                 # 关注文案
                 xtime = self.extract_time(it, "like_notebook")
