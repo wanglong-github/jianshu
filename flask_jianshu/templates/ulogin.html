@@ -83,7 +83,13 @@
         <div id="s-container">
             <img id="s_lg_img" src="{{url_for('static',filename='images/jianshubg.png')}}" width="225" height="168"><br/><br />
             <form action="/" method="post">
-                    <input type="text" id="url" name="url" class="s_ipt" maxlength="100" placeholder="将你的简书主页地址贴在这里，然后提交">
+{#                    <input type="text" id="url" name="url" class="s_ipt" maxlength="100" placeholder="将你的简书主页地址贴在这里，然后提交">#}
+                <select name="uid" class="s_ipt">
+                    {% for u in list %}
+                        <option value="{{ u['slug'] }}">{{ u['nickname'] }}</option>
+                    {% endfor %}
+
+                </select>
                 <input type="submit" value="提交" class="s_btn">
 
             </form>
