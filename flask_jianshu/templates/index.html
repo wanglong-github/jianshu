@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
-
+        <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
 </head>
 <body>
-    {#<!--2 创建echarts显示区域-->#}
-    <div id = "dv",style = "width: 500px;height: 400px" ></div>
-<script>
-    {#<!--3编程实现对象-->#}
-    let et = echarts.init(document.getElementById('dv'))
-    let opt = {
-        xAxis: {
-            data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
-        },
-        //纵轴
-        yAxis: {},
-        //系列列表。每个系列通过type决定自己的图表类型
-        series: [{
-            name: '销量',
-            //折线图
-            type: 'line',
-            data: [5, 20, 36, 10, 10, 20]
-        }]
-    }
-    et.setOption(opt)
+<div id="dv" style="width:500px;height: 400px"></div>
+ <script>
 
-</script>
+     let et=echarts.init(dom=document.getElementById('dv'))
+opt={
+         title : {
+                    text: '用户动态类型',
+                    subtext: '数据来源: www.jianshu.com',
+                    x:'center'
+                },
+         tooltip : {
+                    trigger: 'item',
+                    formatter: "{b} : {c} ({d}%)"
+                },
+            clockwise:true,
+            legend: {
+                    orient: 'vertical',
+                    right: '10%',
+                    data: {{ pkey|tojson }}
+                },
+            // color:['#FF6600','#EFE42A','#64BD3D'],
+         series: [{
+             name:'牛排',
+             type:'pie',
+             radius : '75%',
+                        center: ['50%', '60%'],
+             data:{{ da|tojson }}
+         }]
+        }
+ //           将自定义选项对象与echarts对象进行配置
+         et.setOption(opt)
+  </script>
 </body>
 </html>
