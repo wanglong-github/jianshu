@@ -67,17 +67,18 @@ class JianshuSpider(scrapy.Spider):
             self.follow_num[slug_id]=0
 
             # 创建当前用户动态信息统计对象
-            if slug_id not in self.timeline_data:
-                self.timeline_data[slug_id] = [
-                    {'comment_note': []},  # 发表评论
-                    {'like_note': []},  # 喜欢文章
-                    {'reward_note': []},  # 赞赏文章
-                    {'share_note': []},  # 发表文章
-                    {'like_user': []},  # 关注用户
-                    {'like_collection': []},  # 关注专题
-                    {'like_comment': []},  # 点赞评论
-                    {'like_notebook': []},  # 关注文案
-                ]
+            self.itemdata={}
+            self.itemdata['slug']=slug_id
+            self.timeline_data['dydata'] = [
+                {'comment_note': []},  # 发表评论
+                {'like_note': []},  # 喜欢文章
+                {'reward_note': []},  # 赞赏文章
+                {'share_note': []},  # 发表文章
+                {'like_user': []},  # 关注用户
+                {'like_collection': []},  # 关注专题
+                {'like_comment': []},  # 点赞评论
+                {'like_notebook': []},  # 关注文案
+            ]
 
             #按照作者slug_id获取对应请求作者首页的地址
             au_url=f'https://www.jianshu.com/u/{slug_id}'
@@ -86,8 +87,8 @@ class JianshuSpider(scrapy.Spider):
                           headers=self.base_headers,meta={'slug':slug_id})
             # 通过作者标识，得到对应粉丝页面
             fan_url = f'https://www.jianshu.com/users/{slug_id}/followers'
-            yield Request(url=fan_url, callback=self.parse_fans,
-                          headers=self.base_headers, meta={'slug': slug_id})
+            # yield Request(url=fan_url, callback=self.parse_fans,
+            #               headers=self.base_headers, meta={'slug': slug_id})
             #解析用户的操作动态信息
             schedule_url=f'https://www.jianshu.com/users/{slug_id}/timeline'
             yield Request(url=schedule_url, callback=self.parse_schedule,
@@ -217,14 +218,33 @@ class JianshuSpider(scrapy.Spider):
         #
         # },
         slug = response.meta['slug']
+        xitem = response.meta['xitem']
+        print(f'第一次:{xitem}')
+
+        if xitem and (xitem == 'first'):
+            # 只是在第一个得到用户请求创建一个对象
+            self.itemdata = {}
+            self.itemdata['slug'] = slug
+            self.itemdata['dydata'] = [
+                {'comment_note': []},  # '发表评论'
+                {'like_note': []},  # '喜欢文章'
+                {'reward_note': []},  # '赞赏文章'
+                {'share_note': []},  # '发表文章'
+                {'like_user': []},  # '关注用户'
+                {'like_collection': []},  # '关注专题'
+                {'like_comment': []},  # '点赞评论'
+                {'like_notebook': []},  # '关注文集'
+            ]
+        print(f'每次封装动态数据:{self.itemdata}')
 
         # print(f'解析当前作者动态信息，作者标识:{slug}')
         #获取所有的文章项目
         li=response.xpath('//ul[@class="note-list"]/li')
         if not li:
             #当前用户动态信息爬取结束
-            item={self.timeline_data[slug]}
-            print(f'得到当前用户数据：{item}')
+            # item={self.timeline_data[slug]}
+            # print(f'得到当前用户数据：{item}')
+            yield self.itemdata
             return
         #遍历所有文章区域
         for it in li:
@@ -239,7 +259,7 @@ class JianshuSpider(scrapy.Spider):
                 comm_txt=it.xpath('.//span[@data-type="comment_note"]/p/text()').extract_first()
                 #对应文章url
                 arti_slug=it.xpath('./div[@class="content"]/blockquote/a/@href').extract_first()
-                self.timeline_data[slug][0]['comment_note'].append({xtime: {arti_slug:comm_txt}})
+                self.itemdata['dydata'][0]['comment_note'].append({xtime: {arti_slug:comm_txt}})
                 # print(f'发表评论，文章url:{arti_slug},comm_txt:{comm_txt.strip()},时间：{xtime}')
 
             elif it.xpath('.//span[@data-type="like_note"]'):
@@ -247,33 +267,33 @@ class JianshuSpider(scrapy.Spider):
                 xtime = self.extract_time(it, "like_note")
                 #喜欢文章id
                 xhref=it.xpath('./div[@class="content"]/a[1]/@href').extract_first()
-                self.timeline_data[slug][1]['like_note'].append({xtime:xhref})
+                self.itemdata['dydata'][1]['like_note'].append({xtime:xhref})
                 # print(f'喜欢文章url:{xhref},时间:{xtime}')
 
             elif it.xpath('.//span[@data-type="reward_note"]'):
                 # 赞赏文章
                 xtime = self.extract_time(it, "reward_note")
                 href_id = it.xpath('./div[@class="content"]/a[@class="title"]/@href').extract_first()
-                self.timeline_data[slug][2]['reward_note'].append({xtime: href_id})
+                self.itemdata['dydata'][2]['reward_note'].append({xtime: href_id})
 
             elif it.xpath('.//span[@data-type="share_note"]'):
                 # 发表文章
                 xtime = self.extract_time(it,"share_note")
                 xhref = it.xpath('./div[@class="content"]/a[1]/@href').extract_first()
-                self.timeline_data[slug][3]['share_note'].append({xtime: xhref})
+                self.itemdata['dydata'][3]['share_note'].append({xtime: xhref})
 
             elif it.xpath('.//span[@data-type="like_user"]'):
                 # 关注用户
                 xtime = self.extract_time(it, "like_user")
-                href_id = it.xpath('.//div[@class="follow-detail"]/div/a@[class="title"]/@href').extract_first()
-                self.timeline_data[slug][4]['like_user'].append({xtime: href_id})
+                href_id = it.xpath('./div[@class="follow-detail"]/div/a[@class="title"]/@href').extract_first()
+                self.itemdata['dydata'][4]['like_user'].append({xtime: href_id})
                 # print(f'关注用户：{xhref},时间：{xtime}')
 
             elif it.xpath('.//span[@data-type="like_collection"]'):
                 # 关注专题
                 xtime = self.extract_time(it, "like_collection")
                 href_id = it.xpath('./div[@class="content"]/div[@class="follow-detail"]/div/a[class="title"]/@href').extract_first()
-                self.timeline_data[slug][5]['like_collection'].append({xtime: href_id})
+                self.itemdata['dydata'][5]['like_collection'].append({xtime: href_id})
                 # print(f'关注专题：{href_id},时间：{xtime}')
 
             elif it.xpath('.//span[@data-type="like_comment"]'):
@@ -281,14 +301,14 @@ class JianshuSpider(scrapy.Spider):
                 xtime = self.extract_time(it, "like_comment")
                 # 评论文字
                 ctext = it.xpath('./div[@class="content"]/p/text()').extract_first()
-                self.timeline_data[slug][6]['like_comment'].append({xtime: ctext.strip()})
+                self.itemdata['dydata'][6]['like_comment'].append({xtime: ctext.strip()})
                 # print(f'关注专题：{href_id},时间：{xtime}')
             elif it.xpath('.//span[@data-type="like_notebook"]'):
                 # 关注文案
                 xtime = self.extract_time(it, "like_notebook")
                 #文集链接
                 ctext =href_id = it.xpath('./div[@class="content"]/div[@class="follow-detail"]/div/a[class="title"]/@href').extract_first()
-                self.timeline_data[slug][7]['like_notebook'].append({xtime: ctext})
+                self.itemdata['dydata'][7]['like_notebook'].append({xtime: ctext})
 
         #获取下一页max_id取值
         tid=li[-1].xpath('./@id').extract_first()
