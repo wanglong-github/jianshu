@@ -41,6 +41,8 @@ def timeline():
            {'name':'点赞评论','value': 0},
            {'name':'关注文集','value': 0},
     ]
+    #统计发表文章信息
+    dict_pub={}
     #得到动态信息
     for i in xli:
         #获取评论集合
@@ -63,7 +65,13 @@ def timeline():
                     if type['name']=='赞赏文章':
                         type['value']=len(it["reward_note"])
                         break
+
             elif 'share_note' in it.keys():
+                #遍历发表文章
+                for k in it ['share_note']:
+                    mk=list(k.keys())[0][:7]
+                    dict_pub.setdefault(mk,0)
+                    dict_pub[mk]+=1
                 for type in xtype:
                     if type['name']=='发表文章':
                         type['value']=len(it["share_note"])
@@ -89,8 +97,14 @@ def timeline():
                         type['value']=len(it["like_notebook"])
                         break
     piekey=[k['name'] for k in xtype]
+    new_dict={}
+    sortkey=[i for i in sorted(list(dict_pub.keys()))]
+    for k in sortkey:
+        new_dict[k]=dict_pub[k]
+    print(new_dict)
     client.close()
-    return render_template('index.html',da=type,pkey=piekey)
+    return render_template('index.html',da=xtype,pkey=piekey,
+                           mons=list(new_dict.keys()),monDatas=list(new_dict.values()))
 
 
 if __name__ == '__main__':

@@ -3,40 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-        <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
 </head>
 <body>
-<div id="dv" style="width:500px;height: 400px"></div>
- <script>
+<div id="dv" style="width:600px;height: 400px"></div>
+<div id="monthline_chart" style="width:90%;height:600px;"></div>
+<script>
 
-     let et=echarts.init(dom=document.getElementById('dv'))
-opt={
-         title : {
-                    text: '用户动态类型',
-                    subtext: '数据来源: www.jianshu.com',
-                    x:'center'
-                },
-         tooltip : {
-                    trigger: 'item',
-                    formatter: "{b} : {c} ({d}%)"
-                },
-            clockwise:true,
-            legend: {
-                    orient: 'vertical',
-                    right: '10%',
-                    data: {{ pkey|tojson }}
-                },
-            // color:['#FF6600','#EFE42A','#64BD3D'],
-         series: [{
-             name:'牛排',
-             type:'pie',
-             radius : '75%',
-                        center: ['50%', '60%'],
-             data:{{ da|tojson }}
-         }]
+    let et = echarts.init(dom = document.getElementById('dv'))
+    opt = {
+        title: {
+            text: '用户动态类型',
+            subtext: '数据来源: www.jianshu.com',
+            x: 'center'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: "{b} : {c} ({d}%)"
+        },
+        clockwise: true,
+        legend: {
+            orient: 'vertical',
+            right: '10%',
+            data: {{ pkey|tojson }}
+
+        },
+        // color:['#FF6600','#EFE42A','#64BD3D'],
+        series: [{
+            name: '牛排',
+            type: 'pie',
+            radius: '75%',
+            center: ['50%', '60%'],
+            data:{{ da|tojson }}
+        }]
+    }
+    //           将自定义选项对象与echarts对象进行配置
+    et.setOption(opt)
+
+    {#   按月份得到折线图#}
+    // 基于准备好的dom，初始化echarts实例
+    var myChart1 = echarts.init(document.getElementById('monthline_chart'));
+
+    // 指定图表的配置项和数据
+
+    var option = {
+
+        // Make gradient line here
+        visualMap: {
+            show: true,
+            type: 'continuous',
+            seriesIndex: 0,
+            color: ['red', 'orange', 'yellow', 'lightskyblue']
+        },
+
+        title: {
+            left: 'center',
+            text: '各个月份的动态次数',
+            subtext: '数据来源: www.jianshu.com'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        xAxis: {
+            data:{{ mons|tojson }},
+            name: '月份',
+            axisLabel: {
+                rotate: 45
+            }
+        },
+        yAxis: {
+            splitLine: {show: true},
+            name: '动态次数'
+        },
+        grid: {
+            bottom: '6%',
+            top: '10%'
+        },
+        series: {
+            type: 'line',
+            showSymbol: false,
+            data:{{ monDatas|tojson }},
+            markPoint: {
+                data: [
+                    {
+                        type: 'max',
+                        name: '最大值'
+                    }
+                ]
+            },
+            markLine: {
+                data: [
+                    {
+                        type: 'average', name: '平均值',
+                        label: {
+                            normal: {
+                                position: 'end',
+                                formatter: '月平均值:{c}'
+                            }
+                        }
+                    },
+                    {
+                        type: 'max', name: '最大值',
+                        label: {
+                            normal: {
+                                position: 'end',
+                                formatter: '最大值'
+                            }
+                        }
+                    }
+                ]
+            }
         }
- //           将自定义选项对象与echarts对象进行配置
-         et.setOption(opt)
-  </script>
+    };
+    //*必须，绑定图表自适应功能
+    window.onresize = function () {
+        myChart1.resize();
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart1.setOption(option);
+</script>
 </body>
 </html>
