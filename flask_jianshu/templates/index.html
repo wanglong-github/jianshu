@@ -8,6 +8,7 @@
 <body>
 <div id="dv" style="width:600px;height: 400px"></div>
 <div id="monthline_chart" style="width:90%;height:600px;"></div>
+<div id="dayline_chart" style="width:98%;height:600px;"></div>
 <script>
 
     let et = echarts.init(dom = document.getElementById('dv'))
@@ -122,6 +123,69 @@
 
     // 使用刚指定的配置项和数据显示图表。
     myChart1.setOption(option);
+
+
+{#    波浪图#}
+     // 基于准备好的dom，初始化echarts实例
+            var myChart2 = echarts.init(document.getElementById('dayline_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+
+                // Make gradient line here
+                visualMap: {
+                    show: false,
+                    type: 'continuous',
+                    seriesIndex: 0,
+                    color:['red','orange','yellow','lightskyblue']
+                },
+
+                title: {
+                    left: 'center',
+                    text: '每天的动态次数(页内滚动鼠标或拖动下方进度条，可缩放数据)',
+                    subtext:'数据来源: www.jianshu.com'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data:{{ days|tojson }},
+                    name:'日期'
+                },
+                yAxis: {
+                    splitLine: {show: false},
+                    name:'动态次数'
+                },
+                grid: {
+                    bottom: '10%',
+                    top: '12%'
+                },
+                series: {
+                    type: 'line',
+                    showSymbol: false,
+                    data:{{ dayDatas|tojson }}
+                },
+                dataZoom: [{
+                    type: 'slider',
+                    show:true,
+                    start: 0,
+                    end:100
+                },
+                    {
+                        type:'inside',
+                        start: 0,
+                        end:100
+                    }]
+            };
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart2.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart2.setOption(option);
+
 </script>
 </body>
 </html>
